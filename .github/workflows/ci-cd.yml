@@ -8,22 +8,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t $DOCKER_HUB_USERNAME/my-app:latest .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/my-app:latest .
 
       - name: Push Docker image
-        run: docker push $DOCKER_HUB_USERNAME/my-app:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/my-app:latest
 
       - name: Run docker-compose (test locally)
         run: |
