@@ -16,15 +16,15 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           registry: docker.io
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/my-app:latest .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/my-app:latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
 
       - name: Run docker-compose (test locally)
         run: |
