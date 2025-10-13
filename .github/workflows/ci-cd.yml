@@ -35,15 +35,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Trivy
-        uses: aquasecurity/trivy-action@v0.33.1
+      - name: Scan backend image
+        uses: aquasecurity/trivy-action@v0.32.0
         with:
           scan-type: image
           image-ref: ${{ env.BACKEND_IMAGE }}
           severity-threshold: HIGH,CRITICAL
 
       - name: Scan frontend image
-        uses: aquasecurity/trivy-action@v0.33.1
+        uses: aquasecurity/trivy-action@v0.32.0
         with:
           scan-type: image
           image-ref: ${{ env.FRONTEND_IMAGE }}
