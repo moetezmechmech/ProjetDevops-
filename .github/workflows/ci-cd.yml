@@ -21,7 +21,7 @@ jobs:
           registry: docker.io
 
       - name: Build backend docker image
-        run: docker build -t paris-backend:latest ./backend
+        run: docker build -t ghaitho20/paris-backend:latest ./backend
 
       - name: Push backend docker image
         run: docker push ghaitho20/paris-backend:latest
