@@ -24,7 +24,7 @@ jobs:
         run: docker build -t paris-backend:latest ./backend
 
       - name: Push backend docker image
-        run: docker push paris-backend:latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/paris-backend:latest
 
 
       - name: Build frontend docker image
