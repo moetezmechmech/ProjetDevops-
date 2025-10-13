@@ -22,9 +22,7 @@ services:
 
   # Backend API
   backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghaitho20/paris-backend:latest
     ports:
       - "5000:5000"
     environment:
@@ -52,9 +50,7 @@ services:
 
   # Frontend
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghaitho20/paris-frontend:latest
     ports:
       - "80:80"
     environment:
