@@ -21,17 +21,17 @@ jobs:
           registry: docker.io
 
       - name: Build backend docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/paris-backend:latest ./backend
+        run: docker build -t paris-backend:latest ./backend
 
       - name: Push backend docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/paris-backend:latest
+        run: docker push paris-backend:latest
 
 
       - name: Build frontend docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/paris-frontend:latest ./frontend
+        run: docker build -t paris-frontend:latest ./frontend
 
       - name: Push frontend docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/paris-frontend:latest
+        run: docker push paris-frontend:latest
 
       - name: Run docker-compose (test locally)
         run: |
