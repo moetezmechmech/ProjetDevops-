@@ -1,5 +1,3 @@
-name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -12,53 +10,33 @@ env:
 
 jobs:
   build:
-    name: Build Docker Images
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build backend image
-        run: docker build -t $BACKEND_IMAGE ./backend
-
-      - name: Build frontend image
-        run: docker build -t $FRONTEND_IMAGE ./frontend
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v2
+      - run: docker build -t $BACKEND_IMAGE ./backend
+      - run: docker build -t $FRONTEND_IMAGE ./frontend
 
   scan:
-    name: Scan Docker Images
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Scan backend image
-        uses: aquasecurity/trivy-action@v0.32.0
+      - uses: actions/checkout@v3
+      - uses: aquasecurity/trivy-action@v0.32.0
         with:
           scan-type: image
           image-ref: ${{ env.BACKEND_IMAGE }}
           severity-threshold: HIGH,CRITICAL
-
-      - name: Scan frontend image
-        uses: aquasecurity/trivy-action@v0.32.0
+      - uses: aquasecurity/trivy-action@v0.32.0
         with:
           scan-type: image
           image-ref: ${{ env.FRONTEND_IMAGE }}
           severity-threshold: HIGH,CRITICAL
 
   deploy:
-    name: Deploy with Docker Compose
     runs-on: ubuntu-latest
     needs: scan
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Deploy stack
-        run: docker-compose -f docker-compose.yml up -d --build
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v2
+      - run: docker-compose -f docker-compose.yml up -d --build
