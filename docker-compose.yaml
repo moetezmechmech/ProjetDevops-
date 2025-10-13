@@ -84,6 +84,8 @@ services:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
     networks:
+      - paris-network
+
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
     environment:
