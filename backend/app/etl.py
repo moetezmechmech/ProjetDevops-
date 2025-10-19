@@ -41,8 +41,11 @@ def extract(limit):
 
 def transform(arbres):
     # Transform data into a clean list only the valuable 
+
     trees_data = []
     for anc_arbre in arbres:
+        if anc_arbre is None:
+            continue  # skip if the item is None
         tree  ={}
         tree["idbase"] = anc_arbre.get("idbase") 
         tree["type_emplacement"] = anc_arbre.get("typeemplacement", "").strip().capitalize()
