@@ -1,12 +1,12 @@
 import requests
 from sqlalchemy import create_engine, Table, Column, Integer, String, Float, MetaData
 import os
-from dotenv import load_dotenv
+
 from sqlalchemy import text
 
 
-# Load environment variables from .env file
-load_dotenv() 
+
+
 POSTGRES_DB=os.getenv('POSTGRES_DB')
 POSTGRES_USER=os.getenv('POSTGRES_USER')
 POSTGRES_PASSWORD=os.getenv('POSTGRES_PASSWORD')
@@ -40,59 +40,51 @@ def extract(limit):
     return arbres
 
 def transform(arbres):
-    # Transform data into a clean list only the valuable 
-
     trees_data = []
-    for anc_arbre in arbres:
-        if anc_arbre is None:
-            continue  # skip if the item is None
-        tree  ={}
-        tree["idbase"] = anc_arbre.get("idbase") 
-        tree["type_emplacement"] = anc_arbre.get("typeemplacement", "").strip().capitalize()
-        tree["domanialite"] = anc_arbre.get("domanialite", "").strip().capitalize()
-        tree["arrondissement"] = anc_arbre.get("arrondissement", "").upper()
+    for arbre in arbres:
+        tree = {}
+
+        # Ensure idbase exists
+        idbase = arbre.get("idbase")
+        if not idbase:
+            continue
+        tree["idbase"] = idbase
+
+        tree["type_emplacement"] = (arbre.get("typeemplacement") or "").strip().capitalize()
+        tree["domanialite"] = (arbre.get("domanialite") or "").strip().capitalize()
+        tree["arrondissement"] = (arbre.get("arrondissement") or "").upper()
 
         tree["adresse_complete"] = " ".join(
-            filter(None,[anc_arbre.get("complementadresse", ""), anc_arbre.get("adresse","")])
+            filter(None, [arbre.get("complementadresse"), arbre.get("adresse")])
         )
-        
-        # Détails de l'arbre
-        tree["libelle"] = anc_arbre.get("libellefrancais", "").capitalize()
-        tree["genre"] = anc_arbre.get("genre", "").capitalize()
-        tree["espece"] = anc_arbre.get("espece", "")
-        tree["variete"] = anc_arbre.get("varieteoucultivar", "") #a éliminer Null 
 
-        #0->None
-        tree["circonference_cm"] = anc_arbre.get("circonferenceencm") or None
-        if tree["circonference_cm"] == 0:
-            tree["circonference_cm"] = None
+        tree["libelle"] = (arbre.get("libellefrancais") or "").capitalize()
+        tree["genre"] = (arbre.get("genre") or "").capitalize()
+        tree["espece"] = arbre.get("espece", "")
+        tree["variete"] = arbre.get("varieteoucultivar")
+        tree["circonference_cm"] = arbre.get("circonferenceencm") or None
+        tree["hauteur_m"] = arbre.get("hauteurenm") or None
 
-        tree["hauteur_m"] = anc_arbre.get("hauteurenm") or None
-        if tree["hauteur_m"] == 0:
-            tree["hauteur_m"] = None 
-        
-        #normalize stade and remarquable attribute
-        stade = anc_arbre.get("stadedeveloppement", "")
+        stade = arbre.get("stadedeveloppement")
         if stade:
-            stade = stade.replace("Jeune (arbre)", "Jeune").replace("Adulte", "Adulte")
+            stade = stade.replace("Jeune (arbre)", "Jeune")
         tree["stade"] = stade or None
 
-    
-        if anc_arbre.get("remarquable") == "OUI":  
-            tree["remarquable"] = 1
-        elif  anc_arbre.get("remarquable") == "NON":
-            tree["remarquable"] = 0
-        else:
-            tree["remarquable"] = None
-            
+        tree["remarquable"] = (
+            1 if arbre.get("remarquable") == "OUI"
+            else 0 if arbre.get("remarquable") == "NON"
+            else None
+        )
 
-
-        geo =anc_arbre.get("geo_point_2d",{}) #geo is a dict
+        geo = arbre.get("geo_point_2d") or {}
         tree["latitude"] = geo.get("lat")
         tree["longitude"] = geo.get("lon")
 
         trees_data.append(tree)
+
+
     return trees_data
+
 
 def load(trees_data):
     try:

@@ -32,7 +32,6 @@ services:
       POSTGRES_SERVICE: db  
       POSTGRES_PORT: 5432
       LIMIT_EXAMPLES: 100
-      
       # Flask configuration
       FLASK_DEBUG: "false"
       FLASK_HOST: "0.0.0.0"
