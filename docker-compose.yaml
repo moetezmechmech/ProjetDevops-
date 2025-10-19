@@ -84,11 +84,6 @@ services:
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: parisdb
-      POSTGRES_SERVICE: db
-      POSTGRES_PORT: 5432
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_SERVICE}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable"
     ports:
       - "9187:9187"
