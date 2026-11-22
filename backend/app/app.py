@@ -9,24 +9,22 @@ import time
 # Load environment variables from .env file
 load_dotenv() 
 
-PORT_SERVER = os.getenv('FLASK_PORT')
-FLASK_HOST=os.getenv('FLASK_HOST')
-FLASK_DEBUG=os.getenv('FLASK_DEBUG')
-
+PORT_SERVER = int(os.getenv('FLASK_PORT', 5000))
+FLASK_HOST = os.getenv('FLASK_HOST', '0.0.0.0')
+FLASK_DEBUG = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
 
 app = Flask(__name__)
 CORS(app)
-POSTGRES_DB=os.getenv('POSTGRES_DB')
-POSTGRES_USER=os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD=os.getenv('POSTGRES_PASSWORD')
-POSTGRES_SERVICE=os.getenv('POSTGRES_SERVICE')
-POSTGRES_PORT=os.getenv('POSTGRES_PORT')
+POSTGRES_DB = os.getenv('POSTGRES_DB', 'parisdb')
+POSTGRES_USER = os.getenv('POSTGRES_USER', 'postgres')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'postgrespassword')
+POSTGRES_SERVICE = os.getenv('POSTGRES_SERVICE', 'localhost')
+POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
 
 # Prometheus metrics
 REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP Requests', ['method', 'endpoint', 'status'])
 REQUEST_DURATION = Histogram('http_request_duration_seconds', 'HTTP Request Duration')
 DB_CONNECTION_ERRORS = Counter('db_connection_errors_total', 'Database Connection Errors')
-
 
 DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVICE}:{POSTGRES_PORT}/{POSTGRES_DB}"
 engine = create_engine(DATABASE_URL)
