@@ -51,6 +51,26 @@ def after_request(response):
     
     return response
 
+@app.route('/health')
+def health():
+    """Health check endpoint pour Docker et le script de contrôle"""
+    db_status = "ok"
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+    except Exception as e:
+        # Si la base est encore en cours d'initialisation
+        db_status = f"unhealthy: {str(e)}"
+        return jsonify({
+            "status": "degraded",
+            "database": db_status
+        }), 200
+
+    return jsonify({
+        "status": "healthy",
+        "database": db_status
+    }), 200
+
 @app.route('/metrics')
 def metrics():
     """Prometheus metrics endpoint"""
