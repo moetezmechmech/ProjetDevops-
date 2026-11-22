@@ -25,18 +25,19 @@ jobs:
   # ============================================================================
   test:
     name: Tests unitaires (Python ${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         # Exécution du pipeline sur 2 versions du langage (Bonus +1 pt)
         python-version: ["3.9", "3.10"]
 
     steps:
       - name: Récupération du code source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configuration de Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -67,11 +68,11 @@ jobs:
   build-and-push:
     name: Construction et publication des images Docker
     needs: [test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Récupération du code source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Détermination du tag de version (vX.Y.Z ou commit SHA)
         id: versioning
@@ -89,13 +90,13 @@ jobs:
       # Connexion uniquement lors d'un push pour publication
       - name: Connexion au registre Docker Hub
         if: github.event_name == 'push'
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Construction (et publication si push) de l'image Backend
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: ${{ github.event_name == 'push' }}
@@ -104,7 +105,7 @@ jobs:
             ${{ env.DOCKER_USERNAME }}/paris-backend:latest
 
       - name: Construction (et publication si push) de l'image Frontend
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: ${{ github.event_name == 'push' }}
@@ -123,10 +124,10 @@ jobs:
     name: Mise en service & Contrôle de santé
     needs: [build-and-push]
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Récupération du code source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configuration de l'environnement de déploiement
         run: |
