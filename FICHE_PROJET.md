@@ -5,6 +5,10 @@
 **Projet :** Chaine d'intégration et déploiement continu complète  
 **Dépôt Git :** [https://github.com/moetezmechmech/ProjetDevops-.git](https://github.com/moetezmechmech/ProjetDevops-.git)  
 
+### Liens des exécutions du pipeline (Exigés pour le rendu) :
+* 🟢 **Exécution réussie (Pipeline vert) :** [https://github.com/moetezmechmech/ProjetDevops-/actions/runs/44970040120](https://github.com/moetezmechmech/ProjetDevops-/actions/runs/44970040120)
+* 🔴 **Exécution en échec (Pipeline rouge) :** [https://github.com/moetezmechmech/ProjetDevops-/actions/runs/44969358533](https://github.com/moetezmechmech/ProjetDevops-/actions/runs/44969358533)  
+
 ---
 
 ## 1. Architecture du Système
